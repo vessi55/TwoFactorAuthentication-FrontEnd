@@ -1,0 +1,40 @@
+.users .bs-example {
+    margin-left: 30%;
+    margin-right: 10%;
+    overflow: hidden;
+}
+
+.usersList {
+    padding: 3% 0;  
+}
+
+.users table { 
+    width: 100%; 
+}
+
+.users th { 
+    color: white; 
+    background: #2e353d;
+    font-weight: bold; 
+}
+
+.users td, .users th {  
+    border: 1px solid #ccc; 
+    text-align: center;
+}
+
+@media only screen and (max-width: 740px) {
+    .usersList {
+        font-size: 5vw;
+    }
+    
+    .users thead th {
+        display: none;
+        font-size: smaller;
+    }
+
+    .users td {
+        display: block;
+        font-size: smaller;
+    }
+}

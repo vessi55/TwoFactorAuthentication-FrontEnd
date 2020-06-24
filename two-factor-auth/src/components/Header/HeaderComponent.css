@@ -1,0 +1,15 @@
+.navbar-default {
+    background: #2e353d;
+}
+
+.fa-sign-out {
+    color:#e1ffff;
+}
+
+.nav-link { 
+    color:#e1ffff;
+}
+
+.nav-link:hover {
+    color: #38B1DF;
+}

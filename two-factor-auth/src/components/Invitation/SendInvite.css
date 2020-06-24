@@ -1,0 +1,49 @@
+.invitationForm  {
+    overflow: hidden;
+    margin-top: 8%;
+    margin-left: 20%;
+}
+
+.invitation {
+    float: left; 
+    width: 30%;
+    margin-top: 2%;
+    margin-left: 10%;
+    margin-right: 5%;
+}   
+
+.invitationImage {
+    padding: 5%;
+    overflow: hidden;
+}
+
+.invitationImage img { 
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.invitationButton {
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+    width: 40%;
+    padding: 3% 0;
+    font-size: 2vh;
+    margin-top: 10%;
+    border-radius: 5em;
+    background: linear-gradient(to right, #38B1DF, #3381c0);
+}
+
+@media screen and (max-width: 800px) {
+    .invitationImage { 
+        float: none;
+        width: auto;
+        margin-right: 0;   
+   }
+
+   .invitationImage img { 
+        width: 45%;
+        height: 45%;
+        margin-right: 10%;   
+    }
+}

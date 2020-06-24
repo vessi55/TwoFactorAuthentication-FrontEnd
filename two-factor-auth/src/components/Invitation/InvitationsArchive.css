@@ -1,0 +1,19 @@
+.bs-example {
+    margin-left: 30%;
+    margin-right: 10%;
+}
+
+.usersArchive {
+    margin: 3% 0;  
+}
+
+th { 
+    color: white; 
+    background: #292f35;
+    font-weight: bold; 
+}
+
+td, th {  
+    border: 1px solid #ccc; 
+    text-align: center;
+}
