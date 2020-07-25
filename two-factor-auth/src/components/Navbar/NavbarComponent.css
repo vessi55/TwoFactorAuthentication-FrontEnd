@@ -2,14 +2,17 @@
     font-family: verdana;
     font-weight: bold;
     position: fixed;
+    float: right;
     height: 100%;
     width: 20%;
+    top: 0;
+    padding-top: 5%;
     background-color: #2e353d;
 }
   
 .nav-side-menu ul, .nav-side-menu li {
     padding: 0;
-    line-height: 15vh;
+    line-height: 16vh;
     display: block;
     list-style: none;
     text-align: left;

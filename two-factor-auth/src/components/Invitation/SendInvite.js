@@ -6,8 +6,6 @@ import NavbarComponent from '../Navbar/NavbarComponent.js';
 import InvitationService from '../../services/Invitation/InvitationService.js'
 import AuthenticationService from '../../services/Authentication/AuthenticationService.js'
 import InputField from '../Helpers/InputField.js';
-// import InvitePic from '../../images/invite.png'
-
 import InvitePic from '../../assets/invite.svg'
 
 import './SendInvite.css'
@@ -78,7 +76,7 @@ class SendInvite extends Component {
                                 <div className="invitation">
                                     {this.state.message && <div className="alert alert-success">{this.state.message}</div>}
                                     {this.state.errorMsg && <div className="alert alert-warning">{this.state.errorMsg}</div>}  
-                                    <InputField className="invitationEmail" name="email" label="Email" placeholder="Email" width="100%"></InputField>
+                                    <InputField className="invitationEmail" type="reset" name="email" label="Email" placeholder="Email" width="100%"></InputField>
                                     <button className="invitationButton" type="submit" align="center">INVITE</button>
                                 </div>   
                                 

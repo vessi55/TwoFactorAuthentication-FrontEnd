@@ -7,6 +7,7 @@ import Invitations from './components/Invitation/Invitations'
 import InvitationsArchive from './components/Invitation/InvitationsArchive'
 import RegisterComponent from './components/Register/RegisterComponent'
 import LoginComponent from './components/Login/LoginComponent'
+import VerificationComponent from './components/Verification/VerificationComponent.js'
 import WelcomeComponent from './components/Login/WelcomeComponent.js'
 import ForgotPasswordComponent from './components/Login/ForgotPasswordComponent'
 import LogoutComponent from './components/Login/LogoutComponent'
@@ -14,7 +15,6 @@ import ErrorComponent from './components/Error/ErrorComponent'
 
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.css'
-import HeaderComponent from './components/Header/HeaderComponent.js'
 
 function App() {
   return (
@@ -24,6 +24,7 @@ function App() {
           <Switch>
               <Route exact path ="/" component={LoginComponent}></Route>
               <Route exact path="/login" component={LoginComponent}></Route>
+              <Route exact path="/login/verification" component={VerificationComponent}></Route>
               <Route exact path="/register/:id" component={RegisterComponent}></Route>
               <AuthenticationRoute path="/welcome/:email" component={WelcomeComponent}></AuthenticationRoute>
               <Route exact path="/forgotPassword" component={ForgotPasswordComponent}></Route>

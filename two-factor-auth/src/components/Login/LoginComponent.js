@@ -30,12 +30,14 @@ class LoginComponent extends Component {
         .then(response => { 
             AuthenticationService.successfulLogin(response.data.token)
             
-            if(response.data.role === 'USER') {
-                this.props.history.push(`/welcome/${response.data.email}`)
-            }
-            else if(response.data.role === 'ADMIN') {
-                this.props.history.push('/invite')
-            }
+            this.props.history.push(`/login/verification`, response.data)
+            
+            // if(response.data.role === 'USER') {
+            //     this.props.history.push(`/welcome/${response.data.email}`)
+            // }
+            // else if(response.data.role === 'ADMIN') {
+            //     this.props.history.push('/invite')
+            // }
         }).catch(() => {
             this.setState({
                 loginFailed : true

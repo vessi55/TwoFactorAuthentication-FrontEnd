@@ -4,8 +4,8 @@
     overflow: hidden;
 }
 
-.usersList {
-    padding: 3% 0;  
+.users img {
+    padding: 2% 0;  
 }
 
 .users table { 
@@ -23,11 +23,7 @@
     text-align: center;
 }
 
-@media only screen and (max-width: 740px) {
-    .usersList {
-        font-size: 5vw;
-    }
-    
+@media only screen and (max-width: 780px) {
     .users thead th {
         display: none;
         font-size: smaller;
@@ -36,5 +32,10 @@
     .users td {
         display: block;
         font-size: smaller;
+    }
+
+    .usersImage {
+        width: 50%;
+        height: 50%;
     }
 }

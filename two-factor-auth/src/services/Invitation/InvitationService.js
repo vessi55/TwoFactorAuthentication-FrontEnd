@@ -28,6 +28,10 @@ class InvitationService {
         return axios.put(INVITATIONS_API_URL + `/${invitationId}`)
     }
 
+    recoverInvitationById(invitationId) {
+        return axios.put(INVITATIONS_API_URL + `/recover/${invitationId}`)
+    }
+
     checkIfSetUpAccountLinkIsValid(invitationId) {
         return axios.get(INVITATIONS_API_URL + `/valid/${invitationId}`)
     }
