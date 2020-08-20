@@ -13,15 +13,19 @@ class UserService {
     }
 
     sendVerificationCodeViaEmail(email) {
-        return axios.put(USERS_API_URL + `/verify/email/${email}`)
+        return axios.put(USERS_API_URL + `/verify/email?email=${email}`)
     }
 
     sendVerificationCodeViaSMS(phone) {
-        return axios.put(USERS_API_URL + `/verify/phone/${phone}`)
+        return axios.put(USERS_API_URL + `/verify/sms?phone=${phone}`)
+    }
+
+    submitLoginVerificationCode(userVerificationRequest) {
+        return axios.post(USERS_API_URL + '/verification', userVerificationRequest)
     }
 
     sendResetPasswordEmail(resetPasswordEmailRequest) {
-        return axios.post(USERS_API_URL + '/send/reset', resetPasswordEmailRequest)
+        return axios.post(USERS_API_URL + '/reset', resetPasswordEmailRequest)
     }
 
     checkIfResetPassLinkIsValid(userId) {

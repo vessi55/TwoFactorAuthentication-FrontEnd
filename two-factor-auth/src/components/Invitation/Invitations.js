@@ -20,10 +20,10 @@ class Invitations extends Component {
         super(props)
 
         this.state = {
-            message : '',
+            successMsg : '',
             errorMsg : '',
-            isLoading: false,
-            users: []
+            isLoading : false,
+            users : []
         }
         
         this.getAllInvitations = this.getAllInvitations.bind(this)
@@ -37,27 +37,25 @@ class Invitations extends Component {
     getAllInvitations() {
         AuthenticationService.setupAxiosInterceptors()
         this.setState({
-            isLoading: true
+            isLoading : true
         });
 
         InvitationService.getAllInvitations()
-        .then(
-            response => {
-                this.setState({
-                    isLoading: false,
-                    users : response.data
-                })
-            }
-        )
+        .then(response => {
+            this.setState({
+                isLoading : false,
+                users : response.data
+            })
+        })
     }
 
     resendInvitation(invitationId) {
         AuthenticationService.setupAxiosInterceptors()
 
         InvitationService.resendInvitation(invitationId)
-        .then(() => {
+        .then(response => {
             this.setState({
-                message : `An invitation email has been successfully sent !`
+                successMsg : response.data.successMsg
             })
         }).catch(() => {
             this.setState({
@@ -69,14 +67,14 @@ class Invitations extends Component {
     deleteInvitationById(invitationId) {
         AuthenticationService.setupAxiosInterceptors()
         this.setState({
-            isLoading: true
+            isLoading : true
         });
     
         InvitationService.deleteInvitationById(invitationId)
-        .then(() => {
+        .then(response => {
             this.setState({
-                isLoading: false,
-                message : `The invitation has been successfully deleted !`
+                isLoading : false,
+                successMsg : response.data.successMsg
             })
             this.getAllInvitations()
         })
@@ -99,8 +97,16 @@ class Invitations extends Component {
                 <div className="bs-example">
                     <img className="usersImage" alt="" src={UsersImage}></img>
                     <SearchField></SearchField>
-                    {this.state.message && <div className="alert alert-success">{this.state.message}</div>}
-                    {this.state.errorMsg && <div className="alert alert-warning">{this.state.errorMsg}</div>} 
+                    {this.state.successMsg !== '' && 
+                    <div className="alert alert-success alert-dismissible" role="alert">
+                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>{this.state.successMsg}</strong>
+                    </div>}
+                    {this.state.errorMsg !== '' && 
+                    <div className="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>{this.state.errorMsg}</strong>
+                    </div>} 
                     <table className="table table-hover">
                         <thead>
                             <tr>

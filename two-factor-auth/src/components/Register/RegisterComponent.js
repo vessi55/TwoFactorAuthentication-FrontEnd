@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 
+import UserService from '../../services/User/UserService.js'
 import InvitationService from '../../services/Invitation/InvitationService.js'
 
 import './RegisterComponent.css'
@@ -16,10 +17,11 @@ class RegisterComponent extends Component {
             firstName : '',
             lastName : '',
             password : '',
-            confirmPassword : '',
+            repeatPassword : '',
             gender : '',
             phoneNumber : '',
-            veerificationCode : ''
+            verificationCode : '',
+            errorMsg : ''
         }
 
         this.onRegisterClick = this.onRegisterClick.bind(this)
@@ -27,43 +29,67 @@ class RegisterComponent extends Component {
     }
 
     componentDidMount() {
-        InvitationService.getInvitationById(this.state.id)
-        .then(
-            response => {
-                this.setState({
-                    email: response.data.email
-                })
+        InvitationService.checkIfSetUpAccountLinkIsValid(this.props.match.params.id)
+        .then(response => {
+            if(response.data.urlExpired === true) {
+                this.props.history.push(`/expired`)
             }
-        )
+        })
+
+        InvitationService.getInvitationById(this.state.id)
+        .then(response => {
+            this.setState({
+                email : response.data.email
+            })
+        })
     }
 
     onRegisterClick(values) {
-        console.log(values)
+        UserService.registerUser(
+            {
+                firstName : values.firstName,
+                lastName : values.lastName,
+                email : values.email,
+                password : values.password,
+                repeatPassword : values.repeatPassword,
+                phone : values.phone, 
+                gender : values.inlineMaterialRadiosExample,
+                verificationCode : values.verificationCode
+            }   
+        )
+        .then(() => { 
+            this.props.history.push(`/login`)
+        })
+        .catch(error => {
+            this.setState({
+                errorMsg : error.response.data.message
+            })
+        })
     }
 
     validate(values) {
         let errors = {}
 
         if(!values.firstName) {
-            errors.firstName = 'Please enter a first name'
+            errors.firstName = '* First Name Required'
         } 
         if(!values.lastName) {
-            errors.lastName = 'Please enter a last name'
+            errors.lastName = '* Last Name Required'
         } 
         if(!values.password) {
-            errors.password = 'Please enter a password'
+            errors.password = '* Password Required'
         } 
-        if(!values.confirmPassword) {
-            errors.confirmPassword = 'Please confirm your password'
+        if(!values.repeatPassword) {
+            errors.repeatPassword = '* Password Required'
         } 
-        if(!values.gender) {
-            errors.gender = 'Please select a gender'
-        }
         if(!values.phoneNumber) {
-            errors.phoneNumber = 'Please enter a phone number'
+            errors.phoneNumber = '* Phone Number Required'
         } 
         if(!values.verificationCode) {
-            errors.verificationCode = 'Please enter a verification code'
+            errors.verificationCode = '* Verification Code Required'
+        }
+        if(values.password !== values.repeatPassword) {
+            errors.repeatPassword = 'Passwords DO NOT Match !'
         }
         
         return errors
@@ -71,30 +97,23 @@ class RegisterComponent extends Component {
 
     render() {
 
-        let {email, firstName, lastName, password, confirmPassword, gender, phoneNumber, verificationCode} = this.state
+        let {email, firstName, lastName, password, repeatPassword, gender, phoneNumber, verificationCode} = this.state
 
         return (
             
             <div className="register">
                 <h1></h1>
                 <Formik 
-                    initialValues={{email, firstName, lastName, password, confirmPassword, gender, phoneNumber, verificationCode}}
+                    initialValues={{email, firstName, lastName, password, repeatPassword, gender, phoneNumber, verificationCode}}
                     onSubmit={this.onRegisterClick}
-                    validateOnChange={false}
+                    validateOnCFhange={false}
                     validateOnBlur={false}
                     validate={this.validate}
                     enableReinitialize={true}
                     > 
                     {
-                        (props) => (
+                        ({ errors, touched }) => (
                             <Form>
-                                <ErrorMessage name="email" component="div" className="alert alert-warning"></ErrorMessage>
-                                <ErrorMessage name="firstName" component="div" className="alert alert-warning"></ErrorMessage>
-                                <ErrorMessage name="lastName" component="div" className="alert alert-warning"></ErrorMessage>
-                                <ErrorMessage name="password" component="div" className="alert alert-warning"></ErrorMessage>
-                                <ErrorMessage name="confirmPassword" component="div" className="alert alert-warning"></ErrorMessage>
-                                <ErrorMessage name="phoneNumber" component="div" className="alert alert-warning"></ErrorMessage>
-                                <ErrorMessage name="verificationCode" component="div" className="alert alert-warning"></ErrorMessage>
                                 <div className="form-group">
                                     <label><b>Email</b></label><br/>
                                     <div className="emailIcon">
@@ -109,6 +128,7 @@ class RegisterComponent extends Component {
                                             <Field className="registerFirstName" type="text" name="firstName" ></Field>
                                             <i className="fa fa-user fa-lg fa-fw"></i>
                                         </div>
+                                        {touched.firstName && errors.firstName && <div className="errorField">{errors.firstName}</div>}
                                     </div>
                                     <div className="form-group col-md-6">
                                         <label><b>Last Name</b></label><br/>
@@ -116,6 +136,7 @@ class RegisterComponent extends Component {
                                             <i className="fa fa-user fa-lg fa-fw"></i>
                                             <Field className="registerLastName" type="text" name="lastName" ></Field>
                                         </div>
+                                        {touched.lastName && errors.lastName && <div className="errorField">{errors.lastName}</div>}
                                     </div>
                                 </div>
                                 <div className="form-row">
@@ -141,6 +162,7 @@ class RegisterComponent extends Component {
                                             <i className="fa fa-phone fa-lg fa-fw"></i>
                                             <Field className="registerPhone" type="text" name="phoneNumber"></Field>
                                         </div>
+                                        {touched.phoneNumber && errors.phoneNumber && <div className="errorField">{errors.phoneNumber}</div>}
                                     </div>
                                 </div>
                                 <div className="form-row">
@@ -150,24 +172,27 @@ class RegisterComponent extends Component {
                                             <i className="fa fa-lock fa-lg fa-fw"></i>
                                             <Field className="registerPass" type="password" name="password" ></Field>
                                         </div>
+                                        {touched.password && errors.password && <div className="errorField">{errors.password}</div>}
                                     </div>
                                     <div className="form-group col-md-6">
                                         <label><b>Confirm Password</b></label><br/>
                                         <div className="passIcon">
                                             <i className="fa fa-lock fa-lg fa-fw" ></i>
-                                            <Field className="registerConfirmPass" type="password" name="confirmPassword" ></Field>
+                                            <Field className="registerConfirmPass" type="password" name="repeatPassword" ></Field>
                                         </div> 
+                                        {touched.repeatPassword && errors.repeatPassword && <div className="errorField">{errors.repeatPassword}</div>}
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label><b>Verification Code</b></label><br/>
-                                    <p className="codeMsg">(*You have 3 attemps to enter the verification code which we sent to you in the invitation email.)</p>
+                                    <p className="codeMsg">( P.S. For your security, this verification code will expire in 24 hours )</p>
                                     <div className="codeIcon">
-                                        <Field className="registerCode" type="text" name="veerificationCode"></Field>
+                                        <Field className="registerCode" type="text" name="verificationCode"></Field>
                                         <i className="fa fa-key fa-lg fa-fw"></i>
                                     </div>
+                                    {touched.verificationCode && errors.verificationCode && <div className="errorField">{errors.verificationCode}</div>}
                                 </div>
-                                <button className="registerButton" type="submit" align="center">REGISTER</button>
+                                <button className="registerButton" type="submit" align="center"><span>REGISTER</span></button>
                             </Form>
                         )
                     }

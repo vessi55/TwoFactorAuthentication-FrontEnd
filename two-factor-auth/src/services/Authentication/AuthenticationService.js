@@ -1,7 +1,5 @@
 import axios from 'axios'
 
-import { USERS_API_URL } from '../../Constants.js'
-
 export const AUTHENTICATED_USER = 'authenticatedUser'
 
 class AuthenticationService {
@@ -9,13 +7,8 @@ class AuthenticationService {
     createJWTToken(token) {
         return 'Bearer ' + token
     }
-    
-    logInUser(userLoginRequest) {
 
-        return axios.post(USERS_API_URL + `/login`, userLoginRequest)
-    }
-
-    successfulLogin(token) {
+    successfulLoginVerification(token) {
 
         this.setupAxiosInterceptors()
 

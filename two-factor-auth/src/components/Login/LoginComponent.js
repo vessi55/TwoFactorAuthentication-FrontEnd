@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import AuthenticationService from '../../services/Authentication/AuthenticationService.js'
+import { Formik, Form, Field } from "formik";
 
-import './LoginComponent.css'
+import UserService from '../../services/User/UserService.js';
+
+import './LoginComponent.css';
 
 class LoginComponent extends Component {
 
@@ -17,30 +18,21 @@ class LoginComponent extends Component {
         }
 
         this.onLoginClick = this.onLoginClick.bind(this)
-        this.validate = this.validate.bind(this)
     }
 
     onLoginClick(values) {
-        AuthenticationService.logInUser(
+        UserService.loginUser(
             {
                 email : values.email,
                 password : values.password
             }   
         )
         .then(response => { 
-            AuthenticationService.successfulLogin(response.data.token)
-            
-            this.props.history.push(`/login/verification`, response.data)
-            
-            // if(response.data.role === 'USER') {
-            //     this.props.history.push(`/welcome/${response.data.email}`)
-            // }
-            // else if(response.data.role === 'ADMIN') {
-            //     this.props.history.push('/invite')
-            // }
-        }).catch(() => {
+            this.props.history.push({pathname: `/login/verification`, user: response.data})
+        }).catch(error => {
             this.setState({
-                loginFailed : true
+                loginFailed : true,
+                errorMsg : error.response.data.message
             })
         })
     }
@@ -50,44 +42,30 @@ class LoginComponent extends Component {
         this.props.history.push("/forgotPassword")
     }
 
-    validate(values) {
-        let errors = {}
-
-        if(!values.email) {
-            errors.email = 'Please enter your email !'
-        } 
-
-        if(!values.password) {
-            errors.password = 'Please enter your password !'
-        } 
-        
-        return errors
-    }
-    
     render() {
 
         let {email, password} = this.state
 
         return (
+            <>
             <div className="login">
                 <h1>LOGIN</h1>
                 <Formik 
                     initialValues={{email, password}}
                     onSubmit={this.onLoginClick}
-                    validate={this.validate}
-                    validateOnChange={false}
-                    validateOnBlur={false}
                     enableReinitialize={true}
                     > 
                     {
                         () => (
                             <Form>
-                                <ErrorMessage name="email" component="div" className="alert alert-warning"></ErrorMessage>
-                                <ErrorMessage name="password" component="div" className="alert alert-warning"></ErrorMessage>
-                                {this.loginFailed && <div className="alert alert-warning">Invalid Credentials</div>}                            
+                                {this.state.loginFailed && 
+                                <div className="alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>{this.state.errorMsg}</strong>
+                                </div>}                       
                                 <div className="inputWithIcon">
                                     <i className="fa fa-envelope fa-lg fa-fw"></i>
-                                    <Field className="loginEmail" name="email" type="text" placeholder="E-mail"></Field>
+                                    <Field className="loginEmail" name="email" type="text" placeholder="E-mail" autoComplete="off"></Field>
                                 </div>
                                 <div className="inputWithIcon">
                                     <i className="fa fa-lock fa-lg fa-fw"></i>
@@ -100,6 +78,7 @@ class LoginComponent extends Component {
                     }
                 </Formik>
             </div>
+            </>
         )
     }
 }

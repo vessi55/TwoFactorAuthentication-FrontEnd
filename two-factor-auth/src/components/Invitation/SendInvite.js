@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
+import TextField from '@material-ui/core/TextField';
 
 import HeaderComponent from '../Header/HeaderComponent.js';
 import NavbarComponent from '../Navbar/NavbarComponent.js';
 import InvitationService from '../../services/Invitation/InvitationService.js'
 import AuthenticationService from '../../services/Authentication/AuthenticationService.js'
-import InputField from '../Helpers/InputField.js';
 import InvitePic from '../../assets/invite.svg'
 
 import './SendInvite.css'
@@ -27,7 +27,7 @@ class SendInvite extends Component {
 
         this.state = {
             email : '',
-            message : '',
+            successMsg : '',
             errorMsg : '',
         }
 
@@ -36,8 +36,6 @@ class SendInvite extends Component {
 
     sendInvitation(values) {
         AuthenticationService.setupAxiosInterceptors()
-
-        console.log(values)
         InvitationService.sendInvitation(
             {
                 email : values.email 
@@ -45,9 +43,9 @@ class SendInvite extends Component {
         )
         .then(() => {
             this.setState({
-                message : `Invitation has been successfully send to user with email : ` + values.email
+                successMsg : `Invitation has been successfully send to user with email : ` + values.email
             })
-        }).catch((error) => {
+        }).catch(error => {
             this.setState({
                 errorMsg : error.response.data.message
             })
@@ -74,14 +72,23 @@ class SendInvite extends Component {
                         <Form>
                             <div className="invitationForm">        
                                 <div className="invitation">
-                                    {this.state.message && <div className="alert alert-success">{this.state.message}</div>}
-                                    {this.state.errorMsg && <div className="alert alert-warning">{this.state.errorMsg}</div>}  
-                                    <InputField className="invitationEmail" type="reset" name="email" label="Email" placeholder="Email" width="100%"></InputField>
+                                    {this.state.successMsg !== '' && 
+                                    <div className="alert alert-success alert-dismissible" role="alert">
+                                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <strong>{this.state.successMsg}</strong>
+                                    </div>}
+                                    {this.state.errorMsg !== '' && 
+                                    <div className="alert alert-danger alert-dismissible" role="alert">
+                                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <strong>{this.state.errorMsg}</strong>
+                                    </div>}   
+                                    <Field as={TextField} className="form-group" placeholder="Email" type="text" name="email" 
+                                    autoComplete="off" id="outlined-textarea" variant="outlined" label="Email"></Field>
                                     <button className="invitationButton" type="submit" align="center">INVITE</button>
                                 </div>   
                                 
                                 <div className="invitationImage">
-                                    <img src={InvitePic}></img>
+                                    <img src={InvitePic} alt="invite"></img>
                                 </div>  
                             </div>
                         </Form>

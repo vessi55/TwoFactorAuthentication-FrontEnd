@@ -1,13 +1,12 @@
 body {
     font-family: 'Ubuntu', sans-serif;
-    background-color: #efefef !important;
 }
 
 .login {
     width: 50%;
     height: auto;
-    padding-left: 20%;
     margin: 10% 25%;
+    padding-left: 20%;
     border-radius: 1.5em;
     border: 1px solid rgba(180, 154, 154, 0.699);
     box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
@@ -35,7 +34,7 @@ body {
     text-align: center;
     margin-bottom: 27px;
     border: 3px solid rgba(0, 0, 0, 0.02);
-    background: rgba(214, 214, 214, 0.192);
+    background: rgba(165, 164, 164, 0.192);
 }
 
 .loginEmail:focus, .loginPassword:focus {
@@ -43,7 +42,7 @@ body {
 }
 
 .loginEmail::placeholder, .loginPassword::placeholder {
-    color: #aaa;
+    color: rgb(150, 150, 150);
 }
 
 input:focus::-webkit-input-placeholder {
@@ -67,6 +66,7 @@ input:focus::-webkit-input-placeholder {
     font-weight: bold;
     width: 30%;
     border-radius: 5em;
+    border: 1px solid #185280;
     padding: 2% 0;
     font-size: 2vh;
     margin-bottom: 20px;
@@ -74,20 +74,32 @@ input:focus::-webkit-input-placeholder {
 }
 
 .forgotPass {
-    color: #123d61;
     font-size: 16px;
     margin: 5% 0;
     text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
 }
 
-a {
+.forgotPass a {
     color: #185280;
     text-decoration: none;
     text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
 }
 
-@media (max-width: 500px) {
-    .main {
-        border-radius: 0px;
+.alert {
+    width: 60%;
+    margin-left: 20%;
+}
+
+@media (max-width: 1000px) {
+    .login {
+        width: fit-content;
+        position: fixed;
+        background-position: center;
+        background-size: cover;
+    }
+
+    .logInButton {
+        width: 60%;
+        height: 80%;
     }
 }

@@ -1,0 +1,33 @@
+.urlExpiredPage {
+    margin-top: 10%;
+}
+
+.urlExpiredTxt {
+    height: 80%;
+}
+
+.backToLoginBtn {
+    width: 30%;
+    height: 10%;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 2.2vh;
+    border-radius: 0.3em;
+    border: 1.5px solid #2a5081;
+    background: linear-gradient(to bottom, #2a5081, #2a50819d);
+}
+
+@media screen and (max-width: 1300px) {
+    .urlExpiredImg, .urlExpiredTxt { 
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+    }
+    .backToLoginBtn {
+        width: 50%;
+        font-size: smaller;
+        position: relative;
+    }
+}

@@ -7,10 +7,14 @@
 .invitation {
     float: left; 
     width: 30%;
-    margin-top: 2%;
+    margin-top: 5%;
     margin-left: 10%;
     margin-right: 5%;
 }   
+
+.invitation .invitationEmail {
+    width: 100%;
+}
 
 .invitationImage {
     padding: 5%;
@@ -36,6 +40,9 @@
     font-size: 2vh;
     font-weight: bold;
     box-shadow: 0 0 1px #ccc;
+    transform-origin: 50% 50%;;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out;
     -webkit-transform-origin: 50% 50%;
     -webkit-transition-duration: 0.5s;
     -webkit-transition-timing-function: ease-out;
@@ -43,6 +50,7 @@
 }
 
 .invitationButton:hover {
+    box-shadow: lightseagreen;
     -webkit-box-shadow: 0px 0px 0 0 lightseagreen inset , 0px 0px 0 lightseagreen inset;
 }
 
@@ -55,7 +63,6 @@
     .invitationImage { 
         float: none;
         width: auto;
-        margin-right: 0;  
         width: 50%;
         height: 50%;
         margin-right: 10%;  
