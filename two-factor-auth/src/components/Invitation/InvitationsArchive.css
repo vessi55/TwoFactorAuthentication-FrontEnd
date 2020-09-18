@@ -1,6 +1,5 @@
 .archive .bs-example {
-    margin-left: 30%;
-    margin-right: 10%;
+    margin: 5% 10% 0 30%;
 }
 
 .archive table { 

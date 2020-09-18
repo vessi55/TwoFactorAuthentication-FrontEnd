@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 
-import ErrorPage from '../../images/error2.png'
+import ErrorPage from '../../images/error.png'
 
 import './ErrorComponent.css'
 

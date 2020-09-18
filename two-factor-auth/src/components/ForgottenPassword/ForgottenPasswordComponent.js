@@ -3,6 +3,7 @@ import { Formik, Form, Field } from "formik";
 import TextField from '@material-ui/core/TextField';
 
 import UserService from '../../services/User/UserService.js'
+import AlertDialog from '../Helpers/AlertDialog.js';
 import ForgotPassPic from '../../images/forgotPassword.png'
 
 import './ForgottenPasswordComponent.css'
@@ -27,7 +28,7 @@ class ForgottenPasswordComponent extends Component {
         let errors = {}
 
         if(!values.email) {
-            errors.email = '* Email Required'
+            errors.email = '* Въведете имейл'
         }
         
         return errors
@@ -41,12 +42,12 @@ class ForgottenPasswordComponent extends Component {
         )
         .then(response => {
             this.setState({
-                successMsg : response.data
+                successMsg : `Имейл за забравена парола е изпратен успешно !`
             })
         })
         .catch(error => {
             this.setState({
-                errorMsg : error.response
+                errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
             })
         })
     }
@@ -68,23 +69,15 @@ class ForgottenPasswordComponent extends Component {
                         ({ errors, touched }) => (
                             <Form>
                                 <img src={ForgotPassPic} alt="forgotPass"></img>
-                                <h2>Forgot Your Password?</h2>
-                                <p>Please enter your email address in the box below. <br/> You will receive instructions about how to reset your password.</p>
-                                {this.state.successMsg !== '' && 
-                                <div className="alert alert-success alert-dismissible" role="alert">
-                                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>{this.state.successMsg}</strong>
-                                </div>}
-                                {this.state.errorMsg !== '' && 
-                                <div className="alert alert-danger alert-dismissible" role="alert">
-                                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>{this.state.errorMsg}</strong>
-                                </div>}  
-                                <Field as={TextField} className="form-control" placeholder="Email" type="text" name="email" 
-                                    autoComplete="off" id="outlined-textarea" variant="outlined" label="Email"></Field>
+                                <h2>Забравили сте своята парола?</h2>
+                                <p>Моля въведете своя имейл в полето отдолу.<br/> Ще получите имейл с по-подробни инструкции как да смените своята парола.</p>
+                                {this.state.successMsg !== '' && <AlertDialog alert="alert alert-success alert-dismissible" message={this.state.successMsg}></AlertDialog>}
+                                {this.state.errorMsg !== '' &&  <AlertDialog alert="alert alert-danger alert-dismissible" message={this.state.errorMsg}></AlertDialog>}  
+                                <Field as={TextField} className="form-control" placeholder="Имейл" type="text" name="email" 
+                                    autoComplete="off" id="outlined-textarea" variant="outlined" label="Имейл"></Field>
                                 {touched.email && errors.email && <div className="errorField">{errors.email}</div>}
-                                <button type="submit" className="sendResetPasswordEmailBtn" onClick={this.sendResetPasswordEmail}>
-                                    <span>Reset Password</span></button>
+                                <button type="submit" className="sendResetPasswordEmailBtn">
+                                    <span>Смени Парола</span></button>
                             </Form>
                             )
                         }

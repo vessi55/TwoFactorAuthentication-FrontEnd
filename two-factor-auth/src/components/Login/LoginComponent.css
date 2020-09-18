@@ -73,6 +73,10 @@ input:focus::-webkit-input-placeholder {
     background: linear-gradient(to right, #38B1DF, #3381c0);
 }
 
+.logInButton:focus{
+    outline: none;
+}
+
 .forgotPass {
     font-size: 16px;
     margin: 5% 0;
@@ -93,13 +97,14 @@ input:focus::-webkit-input-placeholder {
 @media (max-width: 1000px) {
     .login {
         width: fit-content;
-        position: fixed;
         background-position: center;
         background-size: cover;
     }
-
     .logInButton {
         width: 60%;
         height: 80%;
+    }
+    .forgotPass {
+        font-size: smaller;
     }
 }

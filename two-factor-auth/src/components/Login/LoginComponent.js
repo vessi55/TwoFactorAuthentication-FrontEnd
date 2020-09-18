@@ -32,14 +32,14 @@ class LoginComponent extends Component {
         }).catch(error => {
             this.setState({
                 loginFailed : true,
-                errorMsg : error.response.data.message
+                errorMsg : `Невалиден имейл или парола.`
             })
         })
     }
 
 
     forgotPassClick() {
-        this.props.history.push("/forgotPassword")
+        this.props.history.push(`/forgotPassword`)
     }
 
     render() {
@@ -49,7 +49,7 @@ class LoginComponent extends Component {
         return (
             <>
             <div className="login">
-                <h1>LOGIN</h1>
+                <h1>ВХОД</h1>
                 <Formik 
                     initialValues={{email, password}}
                     onSubmit={this.onLoginClick}
@@ -65,14 +65,14 @@ class LoginComponent extends Component {
                                 </div>}                       
                                 <div className="inputWithIcon">
                                     <i className="fa fa-envelope fa-lg fa-fw"></i>
-                                    <Field className="loginEmail" name="email" type="text" placeholder="E-mail" autoComplete="off"></Field>
+                                    <Field className="loginEmail" name="email" type="text" placeholder="Имейл"></Field>
                                 </div>
                                 <div className="inputWithIcon">
                                     <i className="fa fa-lock fa-lg fa-fw"></i>
-                                    <Field className="loginPassword" name="password" type="password" placeholder="Password"></Field>
+                                    <Field className="loginPassword" name="password" type="password" placeholder="Парола"></Field>
                                 </div>
-                                <button className="logInButton" type="submit" align="center">LOG IN</button>
-                                <p className="forgotPass" align="center"><a href="/forgotPassword">Forgot Your Password ?</a></p>
+                                <button className="logInButton" type="submit" align="center">Вход</button>
+                                <p className="forgotPass" align="center"><a href="/forgotPassword">Забравена Парола ?</a></p>
                             </Form>
                         )
                     }

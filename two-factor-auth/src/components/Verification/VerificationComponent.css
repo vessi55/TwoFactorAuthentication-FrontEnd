@@ -15,8 +15,12 @@
     box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
 }
 
-.verification h1, .verification p {
+.verification h1 {
     margin-top: 5%;
+}
+
+.verification p {   
+    padding: 2%;
 }
 
 @keyframes click-wave {
@@ -41,18 +45,16 @@
 }
 
 .option-input {
-    top: 14px;
-    left: -10px;
+    top: 15px;
     height: 40px;
     width: 40px;
     z-index: 1000;
-    margin-right: 0.5rem;
+    margin-right: 1rem;
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
     -o-appearance: none;
     appearance: none;
-    position: relative;
     background: #cbd1d8;
     border: none;
     color: #fff;
@@ -61,6 +63,10 @@
     outline: none;
     position: relative;
     transition: all 0.15s ease-out 0s;
+}
+
+#v2 {
+    right: 5px;
 }
 
 .option-input:hover {
@@ -105,7 +111,7 @@
     cursor: pointer;
     color: #fff;
     font-weight: bold;
-    width: 15%;
+    width: 20%;
     height: 5%;
     padding: 0.5% 0;
     font-size: 2vh;
@@ -126,13 +132,13 @@
 }
 
 .emailIsSent .row p, .smsIsSent .row p {
-    margin: 1% 7% 0 30%; 
+    margin: 1% 7% 0 25%; 
 }
 
 .codeNotReceivedBtn {
-    width: 15%;
+    width: 20%;
     height: 60%;
-    margin-top: 1%;
+    margin-top: 2.5%;
     border: none;
     background: none;
     text-decoration: underline;
@@ -156,6 +162,10 @@
     text-align: center;
     transition: all 0.5s;
     cursor: pointer;
+}
+
+.submitCodeButton:focus, .smsButton:focus, .emailButton:focus{
+    outline: none;
 }
 
 .verificationOptions .submitCodeButton span {

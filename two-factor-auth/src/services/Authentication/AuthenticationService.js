@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-export const AUTHENTICATED_USER = 'authenticatedUser'
+export const AUTHENTICATED_USER = 'Authenticated User'
+export const AUTHENTICATED_USER_EMAIL = 'Authenticated User Email'
 
 class AuthenticationService {
 
@@ -18,6 +19,7 @@ class AuthenticationService {
 
     successfulLogout() {
         localStorage.removeItem(AUTHENTICATED_USER)
+        localStorage.removeItem(AUTHENTICATED_USER_EMAIL)
     }
 
     isUserLoggedIn() {
@@ -29,30 +31,23 @@ class AuthenticationService {
             return true;
         }
     }
-    getLoggedUserName() {
-        let user = localStorage.getItem(AUTHENTICATED_USER)
-        if(user === null) {
-            return ''
-        }
-        else {
-            return user;
-        }
-    }
 
     setupAxiosInterceptors() {
-
+        console.log("Inside")
         axios.interceptors.request.use(
             config => {
                 if(this.isUserLoggedIn()) {
+                    console.log("Is user logged in")
                     config.headers.authorization = localStorage.getItem(AUTHENTICATED_USER)
                 }
+                console.log("user is logged")
                 return config
             },
             error => {
+                console.log("Error occured")
                 return Promise.reject(error);
             }
-        )
-    }
+        )}
 }
 
 export default new AuthenticationService()

@@ -38,6 +38,11 @@ body {
     width: 80%;
 }
 
+.phoneIcon .phoneLabel {
+    z-index: 99;
+    line-height: 25px;
+}
+
 .emailIcon, .codeIcon, .userIcon, .genderIcon, .phoneIcon, .passIcon {
     position: relative;
 }

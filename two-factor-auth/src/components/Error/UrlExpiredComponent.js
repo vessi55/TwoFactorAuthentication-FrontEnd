@@ -27,7 +27,7 @@ class UrlExpiredComponent extends Component {
                     <div className="form-group col-md-4 col-sm-8">
                         <img className="urlExpiredTxt" src={UrlExpiredText} alt="expired"></img>
                         <button type="submit" className="backToLoginBtn" onClick={this.backToLogin}>
-                            <span>Back To Login</span></button>
+                            <span>Вход в системата</span></button>
                     </div>
                 </div>
             </div>

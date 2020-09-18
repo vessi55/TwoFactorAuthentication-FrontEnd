@@ -8,7 +8,9 @@ import InvitationsArchive from './components/Invitation/InvitationsArchive'
 import RegisterComponent from './components/Register/RegisterComponent'
 import LoginComponent from './components/Login/LoginComponent'
 import VerificationComponent from './components/Verification/VerificationComponent.js'
-import WelcomeComponent from './components/Login/WelcomeComponent.js'
+import PostArticleComponent from './components/Article/PostArticle.js'
+import MyArticlesComponent from './components/Article/MyArticles.js'
+import AllArticlesComponent from './components/Article/AllArticles.js'
 import ForgottenPasswordComponent from './components/ForgottenPassword/ForgottenPasswordComponent.js'
 import ResetPasswordComponent from './components/ForgottenPassword/ResetPasswordComponent.js'
 import LogoutComponent from './components/Login/LogoutComponent'
@@ -31,7 +33,9 @@ function App() {
               <Route exact path="/forgotPassword" component={ForgottenPasswordComponent}></Route>
               <Route exact path="/reset-password/:id" component={ResetPasswordComponent}></Route>
               <Route exact path="/expired" component={UrlExpiredComponent}></Route>
-              <AuthenticationRoute path="/welcome/:email" component={WelcomeComponent}></AuthenticationRoute>
+              <AuthenticationRoute exact path="/post/article" component={PostArticleComponent}></AuthenticationRoute>
+              <AuthenticationRoute exact path="/articles" component={MyArticlesComponent}></AuthenticationRoute>
+              <AuthenticationRoute exact path="/articles/all" component={AllArticlesComponent}></AuthenticationRoute>
               <AuthenticationRoute exact path="/invite" component={SendInvite}></AuthenticationRoute>
               <AuthenticationRoute exact path="/invitations" component={Invitations}></AuthenticationRoute>
               <AuthenticationRoute exact path="/invitations/archive" component={InvitationsArchive}></AuthenticationRoute>

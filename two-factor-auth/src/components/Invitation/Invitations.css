@@ -1,6 +1,5 @@
 .users .bs-example {
-    margin-left: 30%;
-    margin-right: 10%;
+    margin: 5% 10% 0 30%;
     overflow: hidden;
 }
 
@@ -21,6 +20,24 @@
 .users td, .users th {  
     border: 1px solid #ccc; 
     text-align: center;
+}
+
+.users tr {
+    height: 50px;
+}
+
+.status-style-registered { 
+    background-color:#CEDB56;
+}
+  
+.status-style-invited { 
+    background-color:lightseagreen;
+}
+
+.status-style-registered, .status-style-invited {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
 }
 
 @media only screen and (max-width: 780px) {

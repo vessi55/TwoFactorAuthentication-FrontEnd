@@ -2,8 +2,9 @@ import React, {Component} from 'react'
 import { Formik, Form, Field } from 'formik';
 
 import UserService from '../../services/User/UserService.js'
-import ResetPassPic from '../../images/password.PNG'
+import AlertDialog from '../Helpers/AlertDialog.js';
 import PopUp from '../Helpers/PopUp.js'
+import ResetPassPic from '../../images/password.PNG'
 
 import './ResetPasswordComponent.css'
 
@@ -29,7 +30,6 @@ class ResetPasswordComponent extends Component {
     }
 
     componentDidMount() {
-         this.setState({ showModal: true });
         UserService.checkIfResetPassLinkIsValid(this.props.match.params.id)
         .then(response => {
             if(response.data.urlExpired === true) {
@@ -42,15 +42,19 @@ class ResetPasswordComponent extends Component {
         let errors = {}
 
         if(!values.password) {
-            errors.password = '* Password Required'
+            errors.password = '* Въведете парола'
         } 
-
         if(!values.repeatPassword) {
-            errors.repeatPassword = '* Password Required'
+            errors.repeatPassword = '* Въведете парола'
         }
-
+        if(values.password.length < 6) {
+            errors.password = 'Паролата трябва да съдържа поне 6 символа'
+        } 
+        if(values.repeatPassword.length < 6) {
+            errors.repeatPassword = 'Паролата трябва да съдържа поне 6 символа'
+        }
         if(values.password !== values.repeatPassword) {
-            errors.repeatPassword = 'Passwords DO NOT Match !'
+            errors.repeatPassword = 'Двете пароли НЕ съвпадат !'
         }
         
         return errors
@@ -64,7 +68,14 @@ class ResetPasswordComponent extends Component {
                 repeatPassword : values.repeatPassword
             }
         )
-        this.handleOpenModal()
+        .then(
+            this.handleOpenModal()
+        )
+        .catch(error => {
+            this.setState({
+                errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
+            })
+        })
     }
 
     handleOpenModal () {
@@ -76,7 +87,7 @@ class ResetPasswordComponent extends Component {
     }
 
     goToLoginPage() {
-        this.props.history.push('/login')
+        this.props.history.push(`/login`)
     }
 
     render() {
@@ -100,38 +111,32 @@ class ResetPasswordComponent extends Component {
                                         <img src={ResetPassPic} alt="resetPassword"></img>
                                     </div>
                                     <div className="form-group col-md-4">
-                                     <h1>Reset Password</h1>
-                                        <label>New Password</label>
+                                     <h1>Смяна на парола</h1>
+                                        <label>Нова парола</label>
                                         <div className="passIcon">
                                             <i className="fa fa-lock fa-lg fa-fw"></i>
                                             <Field className="form-control" type="password" name="password" ></Field>
                                         </div>
                                         {touched.password && errors.password && <div className="errorField">{errors.password}</div>} 
-                                        <label>Confirm New Password</label>
+                                        <label>Потвърди новата парола</label>
                                         <div className="passIcon">
                                             <i className="fa fa-lock fa-lg fa-fw"></i>
                                             <Field className="form-control" type="password" name="repeatPassword" ></Field>
                                         </div>
                                         {touched.repeatPassword && errors.repeatPassword && <div className="errorField">{errors.repeatPassword}</div>}
                                         <button type="submit" className="resetPasswordBtn" onClick={this.sendResetPasswordEmail}>
-                                            <span>Reset Password</span></button>
+                                            <span>Продължи</span></button>
                                     </div>
                                 </div>
                                 <PopUp 
-                                    showModal={this.state.showModal} title='Reset Password' body='Your password has been changed successfully ! 
-                                    Please use your new password to log in to your account and continue.' closeAction={this.handleCloseModal}
-                                    buttonAction={this.goToLoginPage} buttonName='Go To Login'>
+                                    showModal={this.state.showModal} title='Смяна на парола' 
+                                    body='Вашата парола беше сменена успешно ! 
+                                    Моля използвате новата си парола, за да влезете в системата и да продължите напред.' 
+                                    customStyles={popUpStyles}
+                                    closeAction={this.handleCloseModal}
+                                    buttonAction={this.goToLoginPage} buttonName='Вход в системата'>
                                 </PopUp>
-                                {this.state.successMsg !== '' && 
-                                <div className="alert alert-success alert-dismissible" role="alert">
-                                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>{this.state.successMsg}</strong>
-                                </div>}
-                                {this.state.errorMsg !== '' && 
-                                <div className="alert alert-danger alert-dismissible" role="alert">
-                                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>{this.state.errorMsg}</strong>
-                                </div>}
+                                {this.state.errorMsg !== '' &&  <AlertDialog alert="alert alert-danger alert-dismissible" message={this.state.errorMsg}></AlertDialog>}
                             </Form>
                         )
                     }
@@ -141,6 +146,27 @@ class ResetPasswordComponent extends Component {
     }
 }
 
-
+const popUpStyles = {
+    overlay: {
+        position: 'fixed',
+      },
+      content: {
+        position: 'absolute',
+        margin: 'auto',
+        top: '100px',
+        left: '100px',
+        right: '100px',
+        bottom: '100px',
+        width: '50%',
+        height: 'fit-content',
+        overflow: 'auto',
+        outline: 'none',
+        padding: '20px',
+        border: '1px solid #ccc',
+        borderRadius: '1em',
+        background: '#fafbfc',
+        WebkitOverflowScrolling: 'touch',
+      }
+};
 
 export default ResetPasswordComponent

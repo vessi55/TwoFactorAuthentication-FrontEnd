@@ -1,15 +1,16 @@
 import React, {Component} from 'react'
 
-import { IconButton } from '@material-ui/core';
+import { IconButton, TextField, InputAdornment } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EmailIcon from '@material-ui/icons/Email';
+import SearchIcon from "@material-ui/icons/Search";
 
+import AlertDialog from '../Helpers/AlertDialog.js';
 import HeaderComponent from '../Header/HeaderComponent.js';
-import NavbarComponent from '../Navbar/NavbarComponent.js';
+import AdminNavbarComponent from '../Navbar/AdminNavbarComponent.js';
 import InvitationService from '../../services/Invitation/InvitationService.js'
 import AuthenticationService from '../../services/Authentication/AuthenticationService.js'
-import LoadingIndicator from '../Utils/LoadingIndicator'
-import SearchField from '../Helpers/SearchField.js';
+
 import UsersImage from '../../images/users.png'
 
 import './Invitations.css'
@@ -22,28 +23,26 @@ class Invitations extends Component {
         this.state = {
             successMsg : '',
             errorMsg : '',
-            isLoading : false,
+            searchFieldValue : '',
             users : []
         }
         
         this.getAllInvitations = this.getAllInvitations.bind(this)
         this.deleteInvitationById = this.deleteInvitationById.bind(this)
+        this.updateSearchFieldValue = this.updateSearchFieldValue.bind(this)
+        this.searchUsersByEmail = this.searchUsersByEmail.bind(this)
     }
 
     componentDidMount() {
-        this.getAllInvitations()
+        this.getAllInvitations();
     }
 
     getAllInvitations() {
         AuthenticationService.setupAxiosInterceptors()
-        this.setState({
-            isLoading : true
-        });
-
+    
         InvitationService.getAllInvitations()
         .then(response => {
             this.setState({
-                isLoading : false,
                 users : response.data
             })
         })
@@ -53,76 +52,97 @@ class Invitations extends Component {
         AuthenticationService.setupAxiosInterceptors()
 
         InvitationService.resendInvitation(invitationId)
-        .then(response => {
+        .then(() => {
             this.setState({
-                successMsg : response.data.successMsg
+                successMsg : `Поканата беше изпратена успешно !`
             })
         }).catch(() => {
             this.setState({
-                errorMsg : `An error occurred. Please try again !`
+                errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
             })
         })
     }
 
     deleteInvitationById(invitationId) {
         AuthenticationService.setupAxiosInterceptors()
-        this.setState({
-            isLoading : true
-        });
     
         InvitationService.deleteInvitationById(invitationId)
         .then(response => {
             this.setState({
-                isLoading : false,
-                successMsg : response.data.successMsg
+                successMsg : response.data
             })
             this.getAllInvitations()
         })
         .catch(() => {
             this.setState({
-                errorMsg : `An error occurred. Please try again !`
+                errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
             })
         })
     }
 
-    render() {
-        if(this.state.isLoading) {
-            return <LoadingIndicator/>
+    updateSearchFieldValue(event) {
+        this.setState({
+            searchFieldValue : event.target.value
+        })
+    }
+
+    searchUsersByEmail() {
+        var search = this.state.searchFieldValue
+
+        if(search === "") {
+            this.getAllInvitations()
         }
+        var filteredUsers = this.state.users.filter(function(user) {
+            return user.email.toLowerCase().includes(search.toLowerCase())
+        });
+        this.setState({
+            users : filteredUsers
+        })
+    }
+
+    render() {
         return (
             <>
             <HeaderComponent></HeaderComponent>
-            <NavbarComponent></NavbarComponent>
+            <AdminNavbarComponent></AdminNavbarComponent>
             <div className="users">
                 <div className="bs-example">
-                    <img className="usersImage" alt="" src={UsersImage}></img>
-                    <SearchField></SearchField>
-                    {this.state.successMsg !== '' && 
-                    <div className="alert alert-success alert-dismissible" role="alert">
-                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <strong>{this.state.successMsg}</strong>
-                    </div>}
-                    {this.state.errorMsg !== '' && 
-                    <div className="alert alert-danger alert-dismissible" role="alert">
-                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <strong>{this.state.errorMsg}</strong>
-                    </div>} 
+                    {/* <img className="usersImage" alt="" src={UsersImage}></img> */}
+                    <TextField id="search-input" type="search" placeholder="Имейл" 
+                        variant="outlined" margin="normal" fullWidth
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start"><SearchIcon/></InputAdornment>
+                            )
+                        }}
+                        onChange={event => this.updateSearchFieldValue(event)}
+                        onKeyPress={this.searchUsersByEmail}>
+                    </TextField>
+                    {this.state.successMsg !== '' && <AlertDialog alert="alert alert-success alert-dismissible" message={this.state.successMsg}></AlertDialog>}
+                    {this.state.errorMsg !== '' &&  <AlertDialog alert="alert alert-danger alert-dismissible" message={this.state.errorMsg}></AlertDialog>}
                     <table className="table table-hover">
                         <thead>
                             <tr>
-                                <th width='30%'>Email</th>
-                                <th width='10%'>Status</th>
-                                <th width='5%'>Resend</th>
-                                <th width='5%'>Delete</th>
+                                <th width='30%'>Имейл</th>
+                                <th width='10%'>Статус</th>
+                                <th width='5%'>Изпрати покана</th>
+                                <th width='5%'>Изтрий потребител</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="usersTableBody">
                         {
                             this.state.users.map(
                                 user => 
                                     <tr key={user.uid}>
                                         <td>{user.email}</td>
-                                        <td>{user.status}</td>
+                                        <td>
+                                            {user.status === 'INVITED' && (
+                                                <div className="status-style-invited">ПОКАНЕН</div>
+                                            )}
+                                            {user.status === 'REGISTERED' && (
+                                                <div className="status-style-registered">РЕГИСТРИРАН</div>
+                                            )}
+                                        </td>
                                         <td>
                                             <IconButton
                                                 disabled={user.status === 'REGISTERED'}>

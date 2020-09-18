@@ -2,23 +2,14 @@ import React, {Component} from 'react'
 import { Formik, Form, Field } from "formik";
 import TextField from '@material-ui/core/TextField';
 
+import AlertDialog from '../Helpers/AlertDialog.js';
 import HeaderComponent from '../Header/HeaderComponent.js';
-import NavbarComponent from '../Navbar/NavbarComponent.js';
+import AdminNavbarComponent from '../Navbar/AdminNavbarComponent.js';
 import InvitationService from '../../services/Invitation/InvitationService.js'
 import AuthenticationService from '../../services/Authentication/AuthenticationService.js'
 import InvitePic from '../../assets/invite.svg'
 
 import './SendInvite.css'
-
-const validate = (values) => {
-    const errors = {};
-  
-    if (!values.email) {
-      errors.email = 'Please enter an email !';
-    } 
-  
-    return errors;
-  };
 
 class SendInvite extends Component {
 
@@ -32,10 +23,12 @@ class SendInvite extends Component {
         }
 
         this.sendInvitation = this.sendInvitation.bind(this)
+        this.validate = this.validate.bind(this)
     }
 
     sendInvitation(values) {
         AuthenticationService.setupAxiosInterceptors()
+        
         InvitationService.sendInvitation(
             {
                 email : values.email 
@@ -43,14 +36,24 @@ class SendInvite extends Component {
         )
         .then(() => {
             this.setState({
-                successMsg : `Invitation has been successfully send to user with email : ` + values.email
+                successMsg : `Поканата е изпратена успешно !`
             })
         }).catch(error => {
             this.setState({
-                errorMsg : error.response.data.message
+                errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
             })
         })
     }
+
+    validate(values) {
+        let errors = {};
+      
+        if (!values.email) {
+            errors.email = '* Въведете имейл';
+        } 
+      
+        return errors;
+    };
     
     render() {
 
@@ -59,32 +62,24 @@ class SendInvite extends Component {
         return (
             <>
             <HeaderComponent></HeaderComponent>
-            <NavbarComponent></NavbarComponent>
+            <AdminNavbarComponent></AdminNavbarComponent>
             <Formik 
                 initialValues={{email}}
                 onSubmit={this.sendInvitation}
-                validate={validate}
+                validate={this.validate}
                 validateOnChange={true}
                 enableReinitialize={true}
                 > 
                 {
                     () => (
                         <Form>
-                            <div className="invitationForm">        
+                            <div className="invitationForm">
+                            {this.state.successMsg !== '' && <AlertDialog alert="alert alert-success alert-dismissible" message={this.state.successMsg}></AlertDialog>}
+                                {this.state.errorMsg !== '' &&  <AlertDialog alert="alert alert-danger alert-dismissible" message={this.state.errorMsg}></AlertDialog>}          
                                 <div className="invitation">
-                                    {this.state.successMsg !== '' && 
-                                    <div className="alert alert-success alert-dismissible" role="alert">
-                                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>{this.state.successMsg}</strong>
-                                    </div>}
-                                    {this.state.errorMsg !== '' && 
-                                    <div className="alert alert-danger alert-dismissible" role="alert">
-                                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong>{this.state.errorMsg}</strong>
-                                    </div>}   
-                                    <Field as={TextField} className="form-group" placeholder="Email" type="text" name="email" 
-                                    autoComplete="off" id="outlined-textarea" variant="outlined" label="Email"></Field>
-                                    <button className="invitationButton" type="submit" align="center">INVITE</button>
+                                    <Field as={TextField} className="form-group" placeholder="Имейл" type="text" name="email" 
+                                    autoComplete="off" id="outlined-textarea" variant="outlined" label="Имейл"></Field>
+                                    <button className="invitationButton" type="submit" align="center">Покани</button>
                                 </div>   
                                 
                                 <div className="invitationImage">

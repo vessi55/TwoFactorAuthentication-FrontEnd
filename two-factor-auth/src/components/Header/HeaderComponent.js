@@ -22,7 +22,7 @@ class Header extends Component {
 
                         <i className="fa fa-sign-out" aria-hidden="true"></i>
                         <li className="nav-item"><Link className="nav-link" to="/logout" 
-                            onClick={AuthenticationService.successfulLogout}>Logout</Link></li>
+                            onClick={AuthenticationService.successfulLogout}>Изход</Link></li>
                     </ul>
                 </nav>
             </header>

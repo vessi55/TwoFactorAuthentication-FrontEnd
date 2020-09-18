@@ -2,22 +2,25 @@ import axios from "axios"
 
 import { USERS_API_URL } from '../../Constants.js'
 
+export const AUTHENTICATED_USER_EMAIL = 'Authenticated User Email'
+
 class UserService {
 
     loginUser(userLoginRequest) {
-        return axios.post(USERS_API_URL + '/login', userLoginRequest)
+        localStorage.setItem(AUTHENTICATED_USER_EMAIL, userLoginRequest.email)
+        return axios.post(USERS_API_URL + `/login`, userLoginRequest)
     }
 
     registerUser(userRegisterRequest) {
-        return axios.post(USERS_API_URL + '/register', userRegisterRequest)
+        return axios.post(USERS_API_URL + `/register`, userRegisterRequest)
     }
 
-    sendVerificationCodeViaEmail(email) {
-        return axios.put(USERS_API_URL + `/verify/email?email=${email}`)
+    sendVerificationCodeViaEmail(loginVerificationRequest) {
+        return axios.put(USERS_API_URL + `/verify/email`, loginVerificationRequest)
     }
 
-    sendVerificationCodeViaSMS(phone) {
-        return axios.put(USERS_API_URL + `/verify/sms?phone=${phone}`)
+    sendVerificationCodeViaSMS(loginVerificationRequest) {
+        return axios.put(USERS_API_URL + `/verify/sms`, loginVerificationRequest)
     }
 
     submitLoginVerificationCode(userVerificationRequest) {

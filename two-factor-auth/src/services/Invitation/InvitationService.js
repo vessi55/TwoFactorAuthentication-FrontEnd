@@ -21,7 +21,7 @@ class InvitationService {
     }
 
     getInvitationById(invitationId) {
-        return axios.get(INVITATIONS_API_URL + `/${invitationId}`)
+        return axios.get(INVITATIONS_API_URL + `/id/${invitationId}`)
     }
 
     deleteInvitationById(invitationId) {

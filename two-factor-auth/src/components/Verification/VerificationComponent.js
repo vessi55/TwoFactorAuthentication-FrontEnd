@@ -17,9 +17,11 @@ class VerificationComponent extends Component {
             sendSMSClicked : false,
             resendEmailClicked : false,
             resendSMSClicked : false,
+            showTimer : false,
+            initial : true,
             verificationCode : '',
             verificationCodeInput : '',
-            minutes : 1,
+            minutes : 2,
             seconds : 0,
             errorMsg : ''
         }
@@ -55,53 +57,79 @@ class VerificationComponent extends Component {
     }
 
     sendCodeViaEmail() {
-        UserService.sendVerificationCodeViaEmail(this.props.location.user.email)
+        UserService.sendVerificationCodeViaEmail(
+            {
+                contact : this.props.location.user.email
+            }
+        )
         .then(response => {
             this.setState({
+                initial : false,
                 sendSMSClicked : false,
+                showTimer: !this.state.showTimer,
                 sendEmailClicked : !this.state.sendEmailClicked,
                 verificationCode : response.data.verificationCode,
             })
-        }).catch(error => {
+        }).catch(() => {
             this.setState({
-                errorMsg : error.response.data.message
+                errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
             })
         })
     }
 
     sendCodeViaSMS() {
-        UserService.sendVerificationCodeViaSMS(this.props.location.user.phone)
+        UserService.sendVerificationCodeViaSMS(
+            {
+                contact : this.props.location.user.phone
+            }
+        )
         .then(response => {
             this.setState({
+                initial : false,
                 sendEmailClicked : false,
+                showTimer: !this.state.showTimer,
                 sendSMSClicked : !this.state.sendSMSClicked,
                 verificationCode : response.data.verificationCode
             })
-        }).catch(error => {
+        }).catch(() => {
             this.setState({
-                errorMsg : error.response.data.message
+                errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
             })
         })
     }
 
     resendCodeViaEmail() {
-        UserService.sendVerificationCodeViaEmail(this.props.location.user.email)
+        UserService.sendVerificationCodeViaEmail(
+            {
+                contact : this.props.location.user.email
+            }
+        )
         .then(response => {
             this.setState({
                 resendSMSClicked : false,
-                resendEmailClicked : !this.state.resendEmailClicked,
-                verificationCode : response.data.verificationCode
+                resendEmailClicked : true,
+                showTimer: !this.state.showTimer,
+                verificationCode : response.data.verificationCode,
+                minutes : 2,
+                seconds : 0
             })
         })
     }
 
     resendCodeViaSMS() {
-        UserService.sendVerificationCodeViaSMS(this.props.location.user.phone)
+        UserService.sendVerificationCodeViaSMS(
+            {
+                contact : this.props.location.user.phone
+            }
+        )
         .then(response => {
             this.setState({
+                resendSMSClicked : true,
                 resendEmailClicked : false,
-                resendSMSClicked : !this.state.resendSMSClicked,
-                verificationCode : response.data.verificationCode
+                showTimer: !this.state.showTimer,
+                verificationCode : response.data.verificationCode,
+                minutes : 2,
+                seconds : 0
             })
         })
     }
@@ -118,20 +146,20 @@ class VerificationComponent extends Component {
                 AuthenticationService.successfulLoginVerification(response.data.token)
 
                 if(response.data.role === 'USER') {
-                    this.props.history.push(`/welcome/${response.data.email}`)
+                    this.props.history.push(`/post/article`)
                 }
                 else if(response.data.role === 'ADMIN') {
-                    this.props.history.push('/invite')
+                    this.props.history.push(`/invite`)
                 }
             }).catch(error => {
                 this.setState({
-                    errorMsg : error.response.data.message
+                    errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
                 })
             })
         }
         else {
             this.setState({
-                errorMsg : "Invalid Verification Code !"
+                errorMsg : `Невалиден код за верификация !`
             })
         }
         
@@ -149,7 +177,7 @@ class VerificationComponent extends Component {
     }
 
     hidePhoneNumber(phoneNumber) {
-        return phoneNumber[0] + "*".repeat(phoneNumber.length - 4) + phoneNumber.slice(-3);
+        return phoneNumber[0] + phoneNumber[1] + phoneNumber[2] + phoneNumber[3] + "*".repeat(phoneNumber.length - 7) + phoneNumber.slice(-3);
     }
 
     render() {
@@ -160,71 +188,73 @@ class VerificationComponent extends Component {
                     <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <strong>{this.state.errorMsg}</strong>
                 </div>} 
-                <h1>Login Verification</h1>
-                <p>To continue logging in, we need you to complete one of the following:</p>
+                <h1>Логин Верификация</h1>
+                <p>За да продължите напред, е необходимо да изберете как искаш да получите своя код за верификация чрез една от двете възможни опции:</p>
                 <div className="verificationOptions">
                     <label>
-                        <input type="radio" className="option-input radio" name="example" onClick ={this.selectEmailOption}/>
-                        Verification Code via Email
+                        <input type="radio" className="option-input radio" id="v1" name="example" onClick ={this.selectEmailOption}/>
+                        Чрез имейл
                     </label>
                     {
                         this.state.emailOption && 
                         <>
                             <p>
-                                We'll send a code to your contact email address {this.hideEmail(this.props.location.user.email)}<br/>
-                                Please use this verification code to verify your identity.
-                            </p>
+                                Ще получите код за верификация на вашия имейл адрес : <i>({this.hideEmail(this.props.location.user.email)}).</i><br/>
+                                Моля, изполвайте този код за да верифицирате своята самоличност !</p>
                             <button className="emailButton" type="submit" align="center" 
-                                disabled={this.state.sendEmailClicked} onClick={this.sendCodeViaEmail}>Send Email</button>
+                                disabled={this.state.sendEmailClicked} onClick={this.sendCodeViaEmail}>Изпрати Имейл</button>
                         </>
                     }
                     <label>
-                        <input type="radio" className="option-input radio" name="example" onClick ={this.selectSMSOption}/>
-                        Verification Code via SMS
+                        <input type="radio" className="option-input radio" id="v2" name="example" onClick ={this.selectSMSOption}/>
+                        Чрез SMS
                     </label>
                     {
                         this.state.smsOption && 
                         <>
                             <p>
-                                We'll send a code to your contact mobile phone {this.hidePhoneNumber(this.props.location.user.phone)}. <br/>
-                                Please use this verification code to verify your identity.
-                            </p>
+                            Ще получите код за верификация на вашия телефонен номер : <i>({this.hidePhoneNumber(this.props.location.user.phone)}).</i><br/>
+                            Моля, изполвайте този код за да верифицирате своята самоличност !</p>
                             <button disabled={this.state.sendSMSClicked} className="smsButton" type="submit" align="center" onClick={this.sendCodeViaSMS}>Send SMS</button>
                         </>
                     }
                     {
                     this.state.sendEmailClicked && 
                         <div className="emailIsSent">
-                            Verification Code has been sent to your email ! <br/>
-                            Please check your email and submit the verification code in the box below. <br/>
+                            Кодът за верификация беше изпратен на вашият имейл адрес ! <br/>
+                            Моля проверете имейла си и използвайте полученият код в полето, показано отдолу. <br/>
                             <div className="row">
-                                <p>Didn't get the email ?</p> 
-                                <button className="codeNotReceivedBtn" onClick={this.resendCodeViaEmail}><i>Resend Code</i></button>
+                                <p>Не получихте имейл ?</p> 
+                                <button className="codeNotReceivedBtn" onClick={this.resendCodeViaEmail}><i>Изпрати отново</i></button>
                             </div>
                         </div>
                     }
                     {
-                    this.state.sendSMSClicked && 
+                    this.state.sendSMSClicked &&  
                         <div className="smsIsSent">
-                            Verification code has been sent to you phone ! <br/>
-                            Please check your phone and submit the verification code in the box below. <br/>
+                            Кодът за верификация беше изпратен на вашият телефонен номер ! <br/>
+                            Моля проверете мобилния си телефон си и използвайте полученият код в полето, показано отдолу. <br/>
                             <div className="row">
-                                <p>Didn't get the SMS ?</p> 
-                                <button className="codeNotReceivedBtn" onClick={this.resendCodeViaSMS}><i>Resend Code</i></button>
+                                <p>Не получихте SMS ?</p> 
+                                <button className="codeNotReceivedBtn" onClick={this.resendCodeViaSMS}><i>Изпрати отново</i></button>
                             </div>
                         </div>
                     }
                     {
-                        (this.state.sendEmailClicked || this.state.sendSMSClicked) 
+                        (this.state.showTimer) 
+                        && <VerificationCodeExpirationTimer seconds = {this.state.seconds} minutes = {this.state.minutes}/>
+                    }
+                    {
+                        (!this.state.showTimer && !this.state.initial) 
                         && <VerificationCodeExpirationTimer seconds = {this.state.seconds} minutes = {this.state.minutes}/>
                     }
                     <div className="row">
                         <div className="col">
                             <input className="form-control" type="text" name="verificationCode" autoComplete="off"
-                                onChange={this.updateVerificationCodeInput} placeholder="Verification Code"></input>
+                                onChange={this.updateVerificationCodeInput} placeholder="Код за верификация"></input>
                         </div>
                         <div className="col">
-                            <button className="submitCodeButton" type="submit" onClick={this.submitVerificationCode}><span>SUBMIT</span></button>
+                            <button className="submitCodeButton" type="submit" onClick={this.submitVerificationCode}><span>Продължи</span></button>
                         </div>
                     </div>
                 </div>

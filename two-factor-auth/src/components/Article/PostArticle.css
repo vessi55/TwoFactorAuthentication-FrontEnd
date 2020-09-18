@@ -1,43 +1,42 @@
-.invitationForm  {
+.postArticleForm  {
     overflow: hidden;
-    margin-top: 8%;
+    margin-top: 3%;
     margin-left: 20%;
 }
 
-.invitation {
+.articleDetails {
     float: left; 
-    width: 30%;
+    width: 20%;
     margin-top: 5%;
     margin-left: 10%;
     margin-right: 5%;
 }   
 
-.invitation .invitationEmail {
-    width: 100%;
-}
-
-.invitationImage {
+.articleContent {
     padding: 5%;
     overflow: hidden;
 }
 
-.invitationImage img { 
-    max-width: 100%;
-    max-height: 100%;
+.articleDetails .input-group {
+    padding-top: 30%;
 }
 
-.invitationButton {
+.custom-file-label {
+    text-align: left;
+}
+
+.postArticleButton {
     height: 50px;
-    width: 45%;
+    width: 60%;
     padding: 3% 0;
     font-size: 2vh;
-    margin-top: 10%;
-    margin-left: 25%;
+    margin-top: 80%;
+    margin-left: 20%;
     float: left;
     color:#fff;
     background: #31708f;
     border: 0;
-    font-size: 2vh;
+    font-size: 2.5vh;
     font-weight: bold;
     box-shadow: 0 0 1px #ccc;
     transform-origin: 50% 50%;;
@@ -49,22 +48,34 @@
     -webkit-box-shadow: 100px 0px 0 0 lightseagreen inset , -100px 0px 0 lightseagreen inset;
 }
 
-.invitationButton:hover {
+.postArticleButton:hover {
     box-shadow: lightseagreen;
     -webkit-box-shadow: 0px 0px 0 0 lightseagreen inset , 0px 0px 0 lightseagreen inset;
 }
 
-@media screen and (max-width: 800px) {
-    .invitationButton {
-        font-size: smaller;
-        height: 40px;
-    }
+textArea {
+    outline: none;
+    box-shadow: 0px 10px 35px 2px rgba(0, 0, 0, 0.10);
+}
 
-    .invitationImage { 
-        float: none;
-        width: auto;
-        width: 50%;
-        height: 50%;
-        margin-right: 10%;  
+textArea::placeholder{
+    font-style: italic;
+}
+
+@media screen and (max-width: 1105px) {
+    .postArticleButton {
+        width: 80%;
+        margin-left: 10%;
+    }
+}
+
+
+@media screen and (max-width: 850px) {
+    .postArticleButton {
+        width: 80%;
+        font-size: smaller;
+    }
+    .alert {
+        font-size: 2vh;
     }
 }

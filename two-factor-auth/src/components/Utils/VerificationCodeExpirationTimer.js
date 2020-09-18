@@ -39,7 +39,7 @@ class VerificationCodeExpirationTimer extends Component {
         return (
             <div>
                 <br/>
-                <i>P.S. For your security, this verification code will expire in 0{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</i>
+                <i>За по-голяма сигурност, кодът за верификация изтича след: 0{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</i>
             </div>
         )
     }

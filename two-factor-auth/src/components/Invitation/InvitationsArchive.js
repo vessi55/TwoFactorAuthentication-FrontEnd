@@ -1,13 +1,14 @@
 import React, {Component} from 'react'
-import { IconButton } from '@material-ui/core';
+import { IconButton, TextField, InputAdornment } from '@material-ui/core';
 import UndoIcon from '@material-ui/icons/Undo';
+import SearchIcon from "@material-ui/icons/Search";
 
+import AlertDialog from '../Helpers/AlertDialog.js';
 import HeaderComponent from '../Header/HeaderComponent.js';
-import NavbarComponent from '../Navbar/NavbarComponent.js';
+import AdminNavbarComponent from '../Navbar/AdminNavbarComponent.js';
 import InvitationService from '../../services/Invitation/InvitationService.js'
 import AuthenticationService from '../../services/Authentication/AuthenticationService.js';
-import LoadingIndicator from '../Utils/LoadingIndicator'
-import SearchField from '../Helpers/SearchField.js';
+
 import ArchiveImage from '../../images/usersArchive.png'
 
 import './InvitationsArchive.css'
@@ -20,12 +21,14 @@ class InvitationsArchive extends Component {
         this.state = {
             successMsg : '',
             errorMsg : '',
-            isLoading : false,
+            searchFieldValue : '',
             users : []
         }
         
         this.getInvitationsArchive = this.getInvitationsArchive.bind(this)
         this.recoverInvitationById = this.recoverInvitationById.bind(this)
+        this.updateSearchFieldValue = this.updateSearchFieldValue.bind(this)
+        this.searchUsersByEmail = this.searchUsersByEmail.bind(this)
     }
 
     componentDidMount() {
@@ -34,9 +37,6 @@ class InvitationsArchive extends Component {
 
     getInvitationsArchive() {
         AuthenticationService.setupAxiosInterceptors()
-        this.setState({
-            isLoading : true
-        });
 
         InvitationService.getInvitationsArchive()
         .then(response => {
@@ -49,53 +49,67 @@ class InvitationsArchive extends Component {
 
     recoverInvitationById(invitationId) {
         AuthenticationService.setupAxiosInterceptors()
-        this.setState({
-            isLoading : true
-        });
-    
+
         InvitationService.recoverInvitationById(invitationId)
         .then(() => {
             this.setState({
-                isLoading : false,
-                successMsg : `The user has been recovered and an email has been successfully sent !`
+                successMsg : `Успешно подновихте достъпа на този потребител. Имейл до потребителя беше изпратен успешно !`
             })
             this.getInvitationsArchive()
         })
         .catch(() => {
             this.setState({
-                errorMsg : `An error occurred. Please try again !`
+                errorMsg : `Възникна някаква грешка ! Моля, опитайте отново.`
             })
         })
     }
 
-    render() {
+    updateSearchFieldValue(event) {
+        this.setState({
+            searchFieldValue : event.target.value
+        })
+    }
 
-        if(this.state.isLoading) {
-            return <LoadingIndicator/>
+
+    searchUsersByEmail() {
+        var search = this.state.searchFieldValue
+
+        if(search === "") {
+            this.getInvitationsArchive()
         }
+        var filteredUsers = this.state.users.filter(function(user) {
+            return user.email.toLowerCase().includes(search.toLowerCase())
+        });
+        this.setState({
+            users : filteredUsers
+        })
+    }
+
+    render() {
         return (
             <>
             <HeaderComponent></HeaderComponent>
-            <NavbarComponent></NavbarComponent>
+            <AdminNavbarComponent></AdminNavbarComponent>
             <div className="archive">
                 <div className="bs-example">
-                    <img className="archiveImage" alt="archive" src={ArchiveImage}></img>
-                    <SearchField></SearchField>
-                    {this.state.successMsg !== '' && 
-                    <div className="alert alert-success alert-dismissible" role="alert">
-                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <strong>{this.state.successMsg}</strong>
-                    </div>}
-                    {this.state.errorMsg !== '' && 
-                    <div className="alert alert-danger alert-dismissible" role="alert">
-                        <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <strong>{this.state.errorMsg}</strong>
-                    </div>} 
+                    {/* <img className="archiveImage" alt="archive" src={ArchiveImage}></img> */}
+                    <TextField type="search" placeholder="Имейл" aria-describedby="button-addon1" 
+                        variant="outlined" margin="normal" fullWidth
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start"><SearchIcon/></InputAdornment>
+                            )
+                        }}
+                        onChange={event => this.updateSearchFieldValue(event)}
+                        onKeyPress={this.searchUsersByEmail}>
+                    </TextField>
+                    {this.state.successMsg !== '' && <AlertDialog alert="alert alert-success alert-dismissible" message={this.state.successMsg}></AlertDialog>}
+                    {this.state.errorMsg !== '' &&  <AlertDialog alert="alert alert-danger alert-dismissible" message={this.state.errorMsg}></AlertDialog>}
                     <table className="table table-hover">
                         <thead>
                             <tr>
-                                <th width='40%'>Email</th>
-                                <th width='10%'>Recover</th>
+                                <th width='40%'>Имейл</th>
+                                <th width='10%'>Поднови достъп</th>
                             </tr>
                         </thead>
                         <tbody>
